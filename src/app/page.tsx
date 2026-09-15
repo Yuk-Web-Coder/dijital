@@ -11,11 +11,12 @@ export default async function HomePage() {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // 1. スレッド一覧
+  // 1. スレッド一覧 (3件に限定)
   const { data: threads } = await supabase
     .from('threads')
     .select('*, artworks(count)')
     .order('created_at', { ascending: true })
+    .limit(3)
 
   // 2. 最新の投稿作品 (8件)
   const { data: recentArtworks } = await supabase
