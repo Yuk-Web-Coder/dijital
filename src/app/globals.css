@@ -1,26 +1,926 @@
+/* ============================================================
+   Google Fonts — Typography System
+   BIZ UDPGothic: body/UI | Shippori Mincho: headings | JetBrains Mono: meta
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
 @import "tailwindcss";
 
+/* ============================================================
+   Design Tokens — Physical Art Studio Pigment Palette
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Surfaces & Backgrounds ─────────────────────────────── */
+  --bg-gesso:       #F7F5F0; /* Canvas ground: unbleached drawing paper  */
+  --surface-paper:  #FFFFFF; /* Main sheet: fine watercolor paper        */
+  --surface-wood:   #EFECE4; /* Structural bg: muted oak table           */
+  --surface-tinted: #F2EFE8; /* Slightly warm tinted paper surface       */
+
+  /* ── Linework & Boundaries ──────────────────────────────── */
+  --line-graphite:  #E2DDD5; /* 2B pencil outline                        */
+  --line-subtle:    #ECE8E1; /* 4H faint guide line                      */
+  --line-ink:       #C8C2B8; /* Deliberate ink boundary                  */
+
+  /* ── Inks (Typography) ──────────────────────────────────── */
+  --ink-primary:    #23272E; /* Payne's Grey: deep blue-black charcoal   */
+  --ink-muted:      #6C737E; /* Charcoal dust: secondary / meta text     */
+  --ink-faint:      #9DA4AE; /* 6H pencil: ghost annotation              */
+
+  /* ── Historical Fine Art Pigments (Accents) ─────────────── */
+  --pigment-blue:   #2D4B75; /* French Ultramarine — primary brand       */
+  --pigment-blue-lt:#EEF2F8; /* Blue wash — blue tinted surface          */
+  --pigment-red:    #BD5D38; /* Burnt Sienna — CTA / action              */
+  --pigment-red-lt: #FAF0EB; /* Red wash — red tinted surface            */
+  --pigment-green:  #4A6B5B; /* Terre Verte — success / positive         */
+  --pigment-green-lt:#EDF3F0;/* Green wash                               */
+  --pigment-ochre:  #C8963E; /* Yellow Ochre — draft / in-progress       */
+  --pigment-ochre-lt:#FBF5E8;/* Ochre wash                               */
+
+  /* ── Reaction Pigment Swatches ──────────────────────────── */
+  --swatch-kuyo:    #7A6E8A; /* 供養 — muted violet                       */
+  --swatch-aji:     #BD5D38; /* 味がある — burnt sienna                    */
+  --swatch-tsuzuki: #2D4B75; /* 続き描きたい — ultramarine                  */
+  --swatch-kanpeki: #4A6B5B; /* 完璧 — terre verte                        */
+  --swatch-suki:    #B04060; /* 好き — rose madder                        */
+
+  /* ── Legacy Token Aliases (backward-compat for Tailwind arbitrary values) ── */
+  --color-bg:           var(--bg-gesso);
+  --color-surface:      var(--surface-paper);
+  --color-surface-2:    var(--surface-wood);
+  --color-surface-3:    var(--surface-tinted);
+  --color-border:       var(--line-graphite);
+  --color-border-soft:  var(--line-subtle);
+  --color-text:         var(--ink-primary);
+  --color-text-muted:   var(--ink-muted);
+  --color-text-faint:   var(--ink-faint);
+  --color-accent:       var(--pigment-blue);
+  --color-accent-dim:   var(--pigment-blue-lt);
+  --color-accent-glow:  rgba(45, 75, 117, 0.2);
+
+  /* ── Layout ─────────────────────────────────────────────── */
+  --header-h:       54px;
+
+  /* ── Motion ─────────────────────────────────────────────── */
+  --ease-paper:     cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ink:       cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:       120ms;
+  --dur-normal:     220ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'BIZ UDPGothic', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-primary);
+  background-color: var(--bg-gesso);
+  /* Dot-grid paper texture */
+  background-image: radial-gradient(var(--line-graphite) 0.65px, transparent 0.65px);
+  background-size: 14px 14px;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ============================================================
+   Scrollbar — ink on paper
+   ============================================================ */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: var(--bg-gesso); }
+::-webkit-scrollbar-thumb  { background: var(--line-ink); border-radius: 1px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-muted); }
+
+/* ============================================================
+   Layout Utilities
+   ============================================================ */
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+.container--narrow {
+  max-width: 720px;
+}
+
+/* ============================================================
+   Header — Ruled Paper Divider
+   ============================================================ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  background: var(--surface-paper);
+  border-bottom: 2px solid var(--line-graphite);
+  /* Subtle warm shadow — paper resting on table */
+  box-shadow: 0 1px 0 var(--line-subtle), 0 2px 8px rgba(35, 39, 46, 0.04);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Logo — ink stamp mark */
+.site-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Shippori Mincho', 'Yu Mincho', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-primary);
+  transition: opacity var(--dur-fast) var(--ease-ink);
+}
+.site-logo:hover { opacity: 0.72; }
+
+.site-logo__mark {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--ink-primary);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pigment-blue);
+  flex-shrink: 0;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* ============================================================
+   Buttons — Matte pigment / paper stock
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.45rem 1rem;
+  border-radius: 2px;
+  font-family: 'BIZ UDPGothic', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border: none;
+  transition: all var(--dur-fast) var(--ease-ink);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+/* Primary — Burnt Sienna matte fill */
+.btn--primary {
+  background: var(--pigment-red);
+  color: var(--surface-paper);
+  border: 1.5px solid transparent;
+}
+.btn--primary:hover {
+  background: #A5512E;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(189, 93, 56, 0.25);
+}
+.btn--primary:active { transform: translateY(0); }
+
+/* Ghost — outlined paper stock */
+.btn--ghost {
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--line-graphite);
+}
+.btn--ghost:hover {
+  background: var(--surface-wood);
+  color: var(--ink-primary);
+  border-color: var(--line-ink);
+}
+
+/* Blue variant */
+.btn--blue {
+  background: var(--pigment-blue);
+  color: var(--surface-paper);
+  border: 1.5px solid transparent;
+}
+.btn--blue:hover {
+  background: #23406A;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(45, 75, 117, 0.25);
+}
+
+/* Danger — reserved muted red */
+.btn--danger {
+  background: var(--pigment-red-lt);
+  color: var(--pigment-red);
+  border: 1px solid rgba(189, 93, 56, 0.3);
+}
+.btn--danger:hover {
+  background: rgba(189, 93, 56, 0.15);
+}
+
+/* Sizes */
+.btn--sm {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8125rem;
+  border-radius: 2px;
+}
+.btn--lg {
+  padding: 0.65rem 1.4rem;
+  font-size: 0.95rem;
+}
+
+/* ============================================================
+   Paper Sheet Cards
+   ============================================================ */
+.card {
+  background: var(--surface-paper);
+  border: 1px solid var(--line-graphite);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(35, 39, 46, 0.05);
+  transition: box-shadow var(--dur-normal) var(--ease-paper),
+              transform var(--dur-normal) var(--ease-paper),
+              border-color var(--dur-normal) var(--ease-paper);
+}
+.card:hover {
+  border-color: var(--line-ink);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(35, 39, 46, 0.1);
+}
+
+/* ============================================================
+   Thread List — Ruled ledger entries
+   ============================================================ */
+.thread-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--line-graphite);
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--surface-paper);
+}
+
+.thread-item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.8rem 1rem;
+  background: var(--surface-paper);
+  border-bottom: 1px solid var(--line-subtle);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-ink);
+  text-decoration: none;
+  color: var(--ink-primary);
+}
+.thread-item:last-child { border-bottom: none; }
+.thread-item:hover {
+  background: var(--surface-wood);
+}
+
+.thread-item__category {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+  border: 1px solid;
+}
+
+.thread-item__title {
+  font-size: 0.9rem;
+  font-weight: 400;
+  flex: 1;
+  color: var(--ink-primary);
+}
+
+.thread-item__meta {
+  font-size: 0.78rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   Artwork Grid — Drawing boards
+   ============================================================ */
+.artwork-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+/* Card = drawing paper pinned to cork board */
+.artwork-card {
+  background: var(--surface-paper);
+  border: 1px solid var(--line-graphite);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(35, 39, 46, 0.05),
+              0 0 0 1px var(--line-subtle);
+  transition: all var(--dur-normal) var(--ease-paper);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.artwork-card:hover {
+  border-color: var(--line-ink);
+  transform: translateY(-3px) rotate(-0.3deg);
+  box-shadow: 0 6px 24px rgba(35, 39, 46, 0.12),
+              0 0 0 1px var(--line-graphite);
+}
+
+/* Image = passe-partout mount */
+.artwork-card__image-wrap {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--surface-wood);
+  overflow: hidden;
+  /* Inner mount frame */
+  padding: 0;
+}
+.artwork-card__image-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid var(--line-subtle);
+  z-index: 1;
+  pointer-events: none;
+}
+.artwork-card__image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-normal) var(--ease-paper);
+}
+.artwork-card:hover .artwork-card__image-wrap img {
+  transform: scale(1.03);
+}
+
+/* Fork badge — masking tape strip */
+.artwork-card__fork-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  padding: 0.12rem 0.45rem;
+  border-radius: 0;
+  font-size: 0.65rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.artwork-card__body {
+  padding: 0.625rem 0.75rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+  border-top: 1px solid var(--line-subtle);
+}
+
+.artwork-card__author {
+  font-size: 0.78rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.artwork-card__comment {
+  font-size: 0.82rem;
+  color: var(--ink-primary);
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.artwork-card__reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
+/* ============================================================
+   Reaction Chips — 8px pigment swatch + quiet text
+   ============================================================ */
+.reaction-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 2px;
+  font-size: 0.75rem;
+  background: var(--surface-tinted);
+  border: 1px solid var(--line-graphite);
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-ink);
+  user-select: none;
+  font-family: 'BIZ UDPGothic', sans-serif;
+}
+.reaction-chip:hover {
+  background: var(--surface-wood);
+  border-color: var(--line-ink);
+  color: var(--ink-primary);
+}
+.reaction-chip--active {
+  background: var(--surface-wood);
+  border-color: var(--line-ink);
+  color: var(--ink-primary);
+}
+.reaction-chip__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+.reaction-chip__count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+/* Pigment dot colors per reaction */
+.reaction-dot--供養     { background: var(--swatch-kuyo);    }
+.reaction-dot--味がある { background: var(--swatch-aji);     }
+.reaction-dot--続き描きたい { background: var(--swatch-tsuzuki); }
+.reaction-dot--完璧     { background: var(--swatch-kanpeki); }
+.reaction-dot--好き     { background: var(--swatch-suki);    }
+
+/* ============================================================
+   Fork Permission Badges — Masking tape strips
+   ============================================================ */
+.tape-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.12rem 0.5rem;
+  background: var(--line-subtle);
+  border: 1px solid var(--line-graphite);
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  letter-spacing: 0.03em;
+}
+
+.perm-badge--ANY            { background: var(--pigment-green-lt);  color: var(--pigment-green);  border-color: rgba(74, 107, 91, 0.3);  }
+.perm-badge--COLOR_ONLY     { background: var(--pigment-blue-lt);   color: var(--pigment-blue);   border-color: rgba(45, 75, 117, 0.3);  }
+.perm-badge--BACKGROUND_ONLY{ background: var(--pigment-ochre-lt);  color: var(--pigment-ochre);  border-color: rgba(200, 150, 62, 0.3); }
+.perm-badge--LOCKED         { background: var(--surface-tinted);    color: var(--ink-muted);      border-color: var(--line-graphite);    }
+
+/* ============================================================
+   Category Tape Colors — thread category labels
+   ============================================================ */
+.cat--落書き供養 { background: #FBF0EE; color: #9E4A35; border-color: rgba(158, 74, 53, 0.3);  }
+.cat--塗り絵    { background: var(--pigment-blue-lt);  color: var(--pigment-blue);  border-color: rgba(45, 75, 117, 0.3);  }
+.cat--背景練習  { background: var(--pigment-green-lt); color: var(--pigment-green); border-color: rgba(74, 107, 91, 0.3);  }
+.cat--5分落書き { background: var(--pigment-ochre-lt); color: #9E721A; border-color: rgba(158, 114, 26, 0.3); }
+.cat--WIP      { background: #F4EEFA; color: #6A3F8E; border-color: rgba(106, 63, 142, 0.3); }
+.cat--雑談     { background: var(--surface-tinted); color: var(--ink-muted); border-color: var(--line-graphite); }
+/* Dynamic category fallback */
+.cat--free     { background: var(--surface-tinted); color: var(--ink-muted); border-color: var(--line-graphite); }
+.cat--oekaki   { background: #FBF0EE; color: #9E4A35; border-color: rgba(158, 74, 53, 0.3); }
+.cat--nuriebase{ background: var(--pigment-blue-lt);  color: var(--pigment-blue);  border-color: rgba(45, 75, 117, 0.3);  }
+.cat--background{ background: var(--pigment-green-lt); color: var(--pigment-green); border-color: rgba(74, 107, 91, 0.3); }
+.cat--fanart   { background: #F4EEFA; color: #6A3F8E; border-color: rgba(106, 63, 142, 0.3); }
+.cat--critique { background: var(--pigment-ochre-lt); color: #9E721A; border-color: rgba(158, 114, 26, 0.3); }
+.cat--collab   { background: var(--pigment-green-lt); color: var(--pigment-green); border-color: rgba(74, 107, 91, 0.3); }
+
+/* ============================================================
+   Form Elements — Drafting table inputs
+   ============================================================ */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.form-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  padding: 0.6rem 0.875rem;
+  background: var(--surface-paper);
+  border: 1px solid var(--line-graphite);
+  border-radius: 2px;
+  color: var(--ink-primary);
+  font-family: 'BIZ UDPGothic', 'Noto Sans JP', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color var(--dur-fast) var(--ease-ink),
+              box-shadow var(--dur-fast) var(--ease-ink);
+}
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  border-color: var(--pigment-blue);
+  box-shadow: 0 0 0 3px rgba(45, 75, 117, 0.1);
+}
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--ink-faint);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   Upload Zone — Drawing paper drop area
+   ============================================================ */
+.upload-zone {
+  border: 2px dashed var(--line-graphite);
+  border-radius: 2px;
+  padding: 2.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--dur-normal) var(--ease-paper);
+  background: var(--surface-tinted);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(226, 221, 213, 0.4) 10px,
+    rgba(226, 221, 213, 0.4) 11px
+  );
+}
+.upload-zone:hover,
+.upload-zone--active {
+  border-color: var(--pigment-blue);
+  background: var(--pigment-blue-lt);
+  background-image: none;
+}
+.upload-zone__icon {
+  margin-bottom: 0.75rem;
+  color: var(--ink-faint);
+  display: flex;
+  justify-content: center;
+}
+.upload-zone__text {
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  font-weight: 700;
+}
+.upload-zone__sub {
+  font-size: 0.78rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-faint);
+  margin-top: 0.25rem;
+}
+
+/* ============================================================
+   Fork Permission Selector
+   ============================================================ */
+.perm-selector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.perm-option {
+  padding: 0.75rem;
+  border: 1px solid var(--line-graphite);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  background: var(--surface-paper);
+}
+.perm-option:hover {
+  background: var(--surface-wood);
+  border-color: var(--line-ink);
+}
+.perm-option__label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+.perm-option__desc {
+  font-size: 0.72rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-muted);
+}
+.perm-option--selected {
+  border-color: var(--pigment-blue);
+  background: var(--pigment-blue-lt);
+}
+.perm-option--selected .perm-option__label {
+  color: var(--pigment-blue);
+}
+
+/* ============================================================
+   Page Headers — Archival title blocks
+   ============================================================ */
+.page-header {
+  padding-block: 2rem 1.5rem;
+  border-bottom: 2px solid var(--line-graphite);
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-family: 'Shippori Mincho', 'Yu Mincho', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-primary);
+  line-height: 1.3;
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-muted);
+  margin-top: 0.35rem;
+  letter-spacing: -0.01em;
+}
+
+/* Section heading rule */
+.section-heading {
+  font-family: 'Shippori Mincho', 'Yu Mincho', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink-primary);
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.section-heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line-graphite);
+}
+
+/* ============================================================
+   Alerts — Margin annotation style
+   ============================================================ */
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 2px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  border-left: 3px solid;
+}
+.alert--error {
+  background: var(--pigment-red-lt);
+  border-color: var(--pigment-red);
+  color: #8B3620;
+}
+.alert--success {
+  background: var(--pigment-green-lt);
+  border-color: var(--pigment-green);
+  color: #2F5244;
+}
+.alert--info {
+  background: var(--pigment-blue-lt);
+  border-color: var(--pigment-blue);
+  color: var(--pigment-blue);
+}
+.alert--warning {
+  background: var(--pigment-ochre-lt);
+  border-color: var(--pigment-ochre);
+  color: #8B6414;
+}
+
+/* ============================================================
+   Artwork Detail — Museum mounting
+   ============================================================ */
+.artwork-detail__image-wrap {
+  background: var(--surface-wood);
+  border: 1px solid var(--line-graphite);
+  border-radius: 2px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 16px;
+}
+.artwork-detail__image-wrap img {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  border: 1px solid var(--line-subtle);
+}
+
+.lineage-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-muted);
+  padding: 0.35rem 0.625rem;
+  background: var(--surface-tinted);
+  border-radius: 2px;
+  border: 1px solid var(--line-graphite);
+}
+
+/* ============================================================
+   Auth Pages — Application form style
+   ============================================================ */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  padding: 2rem;
+  background: var(--surface-paper);
+  border: 1px solid var(--line-graphite);
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(35, 39, 46, 0.05);
+}
+
+.auth-title {
+  font-family: 'Shippori Mincho', 'Yu Mincho', serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: var(--ink-primary);
+  letter-spacing: 0.03em;
+}
+
+.auth-subtitle {
+  font-size: 0.82rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* ============================================================
+   Loading Skeleton — Gesso wash
+   ============================================================ */
+@keyframes wash {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-wood) 25%,
+    var(--line-subtle) 50%,
+    var(--surface-wood) 75%
+  );
+  background-size: 400px 100%;
+  animation: wash 1.6s ease infinite;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   Micro-animations — Natural paper movement
+   ============================================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pinDrop {
+  0%   { opacity: 0; transform: translateY(-6px) rotate(0.5deg); }
+  100% { opacity: 1; transform: translateY(0) rotate(0deg); }
+}
+
+.animate-fadein {
+  animation: fadeInUp var(--dur-normal) var(--ease-paper) both;
+}
+
+/* Stagger children */
+.stagger > * { animation: pinDrop var(--dur-normal) var(--ease-paper) both; }
+.stagger > *:nth-child(1)  { animation-delay:   0ms; }
+.stagger > *:nth-child(2)  { animation-delay:  40ms; }
+.stagger > *:nth-child(3)  { animation-delay:  80ms; }
+.stagger > *:nth-child(4)  { animation-delay: 120ms; }
+.stagger > *:nth-child(5)  { animation-delay: 160ms; }
+.stagger > *:nth-child(6)  { animation-delay: 200ms; }
+.stagger > *:nth-child(7)  { animation-delay: 240ms; }
+.stagger > *:nth-child(8)  { animation-delay: 280ms; }
+
+/* ============================================================
+   Dividers — Ruled paper lines
+   ============================================================ */
+.ruled-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--line-graphite);
+  border: none;
+  margin-block: 1.5rem;
+}
+
+/* ============================================================
+   Tags / Masking Tape Chips
+   ============================================================ */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.5rem;
+  background: var(--line-subtle);
+  border: 1px solid var(--line-graphite);
+  border-radius: 2px;
+  font-size: 0.72rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink-muted);
+  letter-spacing: 0.02em;
+  transition: all var(--dur-fast) var(--ease-ink);
+  cursor: pointer;
+}
+.tag-chip:hover,
+.tag-chip--selected {
+  background: var(--surface-wood);
+  border-color: var(--line-ink);
+  color: var(--ink-primary);
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 640px) {
+  .artwork-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.625rem;
+  }
+
+  .perm-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    padding-inline: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .artwork-grid {
+    grid-template-columns: 1fr;
+  }
 }
